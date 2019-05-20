@@ -295,7 +295,7 @@ Thanks to Andreas Arnesson for all advices on Python.
 
 \chapter{Introduction}
 \label{sec:introduction}  % labels are used for cross references
-One part of the Machine learning field is pattern recognition, where the aim is to find a \textit{function} that maps given \textit{features} to a \textit{label} \cite{Japkowicz:2011}. Finding this function, or \textit{classifier}, is done either as a \textit{supervised} or \textit{unsupervised} learning method. The differences between these methods are if the labels are available during the learning-phase or not, where supervised has labels, and unsupervised does not \cite{Japkowicz:2011}. The domain problem is finding such a function that is \textit{accurate} and that could generalize on data \cite{} with a feasible \textit{trainteing time}.
+One part of the Machine learning field is pattern recognition, where the aim is to find a \textit{function} that maps given \textit{features} to a \textit{label} \cite{Japkowicz:2011}. Finding this function, or \textit{classifier}, is done either as a \textit{supervised} or \textit{unsupervised} learning method. The differences between these methods are if the labels are available during the learning-phase or not, where supervised has labels, and unsupervised does not \cite{Japkowicz:2011}. The domain problem is finding such a function that is \textit{accurate} and that could \textit{generalize} well on examples \cite{multiconlitron}, with a feasible \textit{training time}.
 
 \par Accuracy and training time for learning algorithms depend on the algorithm and the complexity of the given data. The complexity of the data corresponds to the \textit{feature space} of the data, which is the attributes required for describing the classes to the algorithm\cite{Flach:2012:MLA:2490546}.
 
@@ -304,7 +304,7 @@ One part of the Machine learning field is pattern recognition, where the aim is 
 \par The study presented in this paper sought out to improve a preprocessing technique that had the potential to improve the margin and accuracy in \textit{Support Vector Machines}, called \textit{Hyperplane folding}.
 
 \section{Support Vector Machines}
-Support vector machines (\textit{SVM}) is a \textit{linear} supervised learning model. A linear model bases its predictions on positioning of data \cite{Flach:2012:MLA:2490546, Cortes:1995:SN:218919.218929}. SVMs partition (split) \textit{training-data} based on the features and labels with a linear \textit{hyperplane}. Finding the hyperplane is an optimization problem referred to as training (hence training-data). 
+Support vector machines (\textit{SVM}) is a \textit{linear} supervised learning model that is know for its abilities to generalize well on data \cite{multiconlitron}. A linear model bases its predictions on positioning of data \cite{Flach:2012:MLA:2490546, Cortes:1995:SN:218919.218929}. SVMs partition (split) \textit{training-data} based on the features and labels with a linear \textit{hyperplane}. Finding the hyperplane is an optimization problem referred to as training (hence training-data). 
 
 
 \par A \textit{class} is described by its features. Each class have a unique label e.g. a name such as 'apple' or 'car' or a specific value like 0 or 1. When classifying a sample, using a trained\footnote{Also know as a 'fit' model} SVM, it is predicted as a certain label depending on its relation to the hyperplane, i.e. which side of the plane it resides on. The desirable output is therefore the correct label assigned to the expected class.
@@ -409,7 +409,7 @@ As mentioned above, soft-margin SVMs were meant to solve the problem of not bein
 
 \par A visualisation of what a kernel could achieve can be seen in Figure \ref{fig:kernel} and Figure \ref{fig:kernel2}. A hyperplane is visualised in light blue. The left side \textit{boxes} have no way of separating the green plus-signs from the red minus-signs with a linear plane. How ever, the right side images clearly show that increasing the dimension and offsetting the data along and additional axis would make the data linearly separable. The examples are not constructed based on real kernels, the Figures are merely explanatory.
 
-
+\par Different kernels are available and selecting a suitable one is not always straight forward \cite{multiconlitron}. Therefore finding new models to handle non-linear data without the help of kernels is an attractive area of research.
 
 \begin{figure}
 \centering
@@ -450,6 +450,8 @@ Lundberg et al. \cite{unpublished} experimented with a method that rotates (or f
 
 \par Park and Sklansky wanted to minimize the number of Tomek links required to fit a multi-class regression classifier\cite{parksklansky}. The links were later approximated with a hyperplane that aimed at cutting as many links as possible, iteratively cutting more links. Cutting more links ensures less hyperplanes are needed. They found that using more links yielded a better error rate. Tenmoto et al. later supplemented Park and Sklanskys approach in \cite{tenmoto}. They aimed at improving the selection of hyperplane. Instead of iteratively finding a better hyperplane among all links, they added more links in succession as an alternative way. 
 
+\par To handle non-linear data with SVMs without the need of kernel-tricks Yujian et al. \cite{multiconlitron} proposed the concept of the Multiconlitron. An particular advantage Multiconlitrons have over the classical approach is when handling data classes that linearly cross each others path in its data domain. A cross distance minimization algorithm was used to compute a hardmargin non-kernel SVM. This was later used to replace the desicion function based on conditions. A similar constraint to \cite{unpublished} is that the classes must be 'non-intersecting' \cite{multiconlitron}. 
+
 \chapter{Hyperplane folding}
 
 \section{Existing technique}
@@ -480,7 +482,7 @@ The primary support vector is illustrated in Figure \ref{hpf_1}. The line is use
 \par During classification of points (predicting labels of unknown points using a fit model) the unknown data must undergo the same pre-processing-procedure as the training data was subjected to during training. This is firstly done by determining whether or not, points reside in the same space that got rotated during training. E.g. Determine what side of the primary support vector\footnote{More accuratly stated, what side of the line that goes in the direction of the normal through the primary support vector.} the points are located\footnote{Visualized as, a point located to the left or to the right right of the dotted line in Figure \ref{fig:hpf_pre_rotation}.}. If a point lies in the side that was rotated during training, the point must be rotated by the intersection angle prior to classification. 
 
 \par The process of splitting and rotating the hyperplanes could be repeated in order to improve the margin further \cite{unpublished}.
-\ref{hpf_4}
+
 \begin{figure}
 \centering
 \includegraphics[scale=0.7]{images/intro-images/hpf_4.png}
@@ -941,6 +943,7 @@ A SVM is defined by its support vectors. In this paper the denotation of \textit
  \label{al:dimred}
 \end{algorithm}
 
+
 \subsection{A problem with aligning support vectors} 
 Generally a trained SVM have, for a feature space with $n$ features, $n + 1$ support vectors \cite{unpublished}. Unfortunately this is not always the case. 
 \par For the case where more support vectors than the size of the feature-space are present, aligning support vectors using the above mentioned process will bring the dimensions down too two. For the other cases, that are where less or equal amount of support vectors than the size of the feature-space are present, a two dimensional representation of the SVM cannot be reached using Align as the procedure will run out of support vectors to align.
@@ -987,9 +990,42 @@ From a list of all support vectors, the first is picked to become the new origin
 The input space and the feature space are two similar yet different concepts in machine learning \cite{Flach:2012:MLA:2490546}. The input space is the way the raw data is presented. For instance in a text file, each column could represent a characteristic that was once measured such as height or weight. When loaded the input space could consist of many rows of height values in centimeters or weight values in kilograms. The input space is then converted into a feature space. The feature space is what the model learn from. Sometimes the feature space is larger or smaller than the input space depending on for example kernels or feature extraction techniques are used. For instance, a support vector machine performs best if the data is normalized. Therefore some steps are performed in order to set the data up for learning by the machine which follows here.\todo{detta stycket}
 
 \subsection{Class balancing}
-Classifiers accuracy depend on the training data, and one factor is data balance, the ratio of how many samples of each class that is available \cite{Chawla:2004:ESI:1007730.1007733}. An imbalance between classes can cause the classifier to class all samples as one class, the majority class. This is due to not enough patterns being present during training, as only one class pattern is present\cite{Chawla:2004:ESI:1007730.1007733}. Such miss classification can be costly when applied in various fields, this thesis attempts to classify benign and none benign cancer cells, classify all points as benign would be lead to devastating results. In order to reduce a possible class in balance, undersampling is often employed, which is a technique which removes the class imbalance by removing samples from the majority class until an even ration is achieved \cite{ensamble}. This is wasteful as granularity of the majority-class pattern is lost. We will instead employ EasyEnsamble to reduce the class imbalance to at least 40/60 ratio between classes for the data sets when needed.
+Classifiers accuracy depend on the training data, and one factor is data balance, the ratio of how many samples of each class that is available \cite{Chawla:2004:ESI:1007730.1007733}. An imbalance between classes can cause the classifier to class all samples as one class, the majority class. This is due to not enough patterns being present during training, as only one class pattern is present \cite{Chawla:2004:ESI:1007730.1007733}. Such miss classification can be costly when applied in various fields, this thesis attempts to classify benign and non-benign cancer cells, classify all points as benign would be lead to devastating results. In order to reduce a possible class in balance, under-sampling is often employed, which is a technique which removes the class imbalance by removing samples from the majority class until an even ration is achieved \cite{ensamble}. This is wasteful as granularity of the majority-class pattern is lost. We will instead employ EasyEnsamble to reduce the class imbalance to at least 40/60 ratio between classes for the data sets when needed.
+
+\subsection{Stratified K-fold cross validation}
+
+The algorithm will be tested on a variety of public domain data sets. A way to measure the algorithm on each data set, is to split each set into two parts where one part will be used for training and one for testing. This method can be repeated and averaged to get a more representative result of each data set. This process simulates a larger data pool than what was originally available yielding a more trustworthy testing process.
+
+\par A more structural way of repeating this process is \textit{k}-fold cross validation. Using this method, each data set is divided into \textit{k} equally large splits. Each split will then take turns serving as the test-set and otherwise participate in the training-set. After having repeated the procedure \textit{k} times each run is averaged into the total score of the measure.
+
+\par Our experiment will use 10-fold i.e. splitting the data into ten parts. According to \cite{Kohavi:1995:SCB:1643031.1643047} ten folds is the optimal choice when sampling classification accuracy, regardless of how much computational power is available.
+
+\par As a clarification, in our experiments each split of the ten folds will serve as the test-set once and as a part of the training-set in the remaining nine\footnote{This depends on \textit{k}, e.g how many folds are made} runs. A example demonstrating \textit{K}-fold can be seen in Figure \ref{fig:normkfold}, though to save space the visualization features five folds and not ten. 
+
+\par Splitting the data into either random splits or into splits according to the order the data points lie in the data-file, could yield splits having different ratios of classes. Some splits could get a class balance incomparable with the original data set this way. The pitfall that could potentially come from generating splits this way is easily countered by using Stratified \textit{K}-fold. 
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.65]{images/metod-images/kfold_normal_fold.png}
+   \caption{Non-stratified 5-fold. Without using a stratified method, splitting the data into five folds could cause the splits to be unrepresentative of the original data set. Some of the splits could, at random, receive an unbalanced class distribution. As can be seen the center fold is a faulty split having three out of ten possible positive data samples and no negative samples, which a SVM would not be able to learn from.}
+   \label{fig:normkfold}
+\end{figure}
+
+
+\par When using the stratified method each split is ensured to be as representative, although being a subset, of the original data set as possible \cite{Flach:2012:MLA:2490546, Japkowicz:2011}. Achieving representative splits could be done by drawing one sample at random into each fold belonging to the same class (\textit{k} samples from the same class at a time). Then the same ratio of classes will be present in each of the splits. A similar example to Figure \ref{fig:normkfold}, over viewing the results after a stratified approach, is visualized in Figure \ref{fig:stratkfold}.
+
+
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.65]{images/metod-images/kfold_stratified_fold.png}
+   \caption{Stratified 5-fold. Where each split is drawn to accurately represent the original data set.}
+   \label{fig:stratkfold}
+\end{figure}
 
 \subsection{Data extension}
+\label{data extension}
 \begin{figure}
 \centering
 \includegraphics[scale=0.75]{images/metod-images/extend.png}
@@ -1024,33 +1060,25 @@ Finding and pruning the outliers is done by classifying all of the training data
 
 \section{Experiment}
 
-\begin{figure}
-\centering
-\includegraphics[scale=0.5]{images/metod-images/kfold_normal_fold.png}
-   \caption{Non-stratified 5-fold}
-   \label{fig:extend}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[scale=0.55]{images/metod-images/kfold_stratified_fold.png}
-   \caption{Stratified 5-fold}
-   \label{fig:extend}
-\end{figure}
-
 \subsection{Data sets}
-Rubberband folding and Hyperplane folding will be evaluated by using 4 different data sets. Where 
-The data sets used for this research question is the BMI \cite{unpublished}, Liver \cite{Dua:2019}, Hepatitis \cite{Dua:2019}, and Breast cancer \cite{breastcancer} data set. \par
-The BMI data set is has 3 features and 40 samples. It is used in order to establish a baseline when comparing Hyperplane folding and Rubberband folding, as intial testing in the original Hyperplane folding
-paper \cite{unpublished} used it. \par
-The other data sets where chosen due to their range of features, the liver data set having 7 features, hepatitis 20 and breast cancer 30. The breast cancer data set where choosen due to its popularity, with atleast 43 citations \cite{Dua:2019}. \par
+Rubberband folding and Hyperplane folding will be evaluated by using 4 different data sets, all being binary. 
+\subsubsection{BMI data set}
+The BMI data set was created in the intial Hyperplane folding paper \cite{unpublished}. It is artificially created, with three features, a persons height, weight and age. The BMI data set has 40 data points. The possible labels for the data set is high- and lowblodpressure. The data set is linearly separable, which is not accurate respresentation of real blood pressure data. This was solved in the intial paper by using data exenstion, described in \cite{unpublished} and section \ref{data extension}. The data extension for our experiment will use a maximum radius of 8 units and generate 25 points for each data points, resulting in 1000 points for classification. 
+\subsubsection{Hepatatis data set}
+The Heptatis data set contains patient data from 155 different patients, with 19 features. The possible labels are, DIE (true) or LIVE (false), where the goal of the classifier is to determine if the patient will be survive or not \cite{Dua:2019}. The data set is not linearly seperable. BILD HÄR TACKAR.
+\subsubsection{Liver data set}
+The liver data set contains patient data from 345 patients, with 6 features. The goal of the classifier is to determine if the patient suffers from a liver disorder or not, where true corresponds to liver disorder, and false corresponds to the patient not suffering from a liver disorder. \cite{Dua:2019}. 
+\subsubsection{Breast cancer data set}
+The Breast cancer data set contains 569 patient samples, with 30 features. The goal of the classifier is to determine if the patients cancer is benin (true) or none benin (false) \cite{breastcancer}.
+
 
 \subsection{Research question  one}
 In order to answer research question 1, how the margin is affected by Rubber band folding will be answered by measuring the margin pre-Rubberband folding (Support vector machine value-margin) and post-Rubberband folding. As Rubberband folding aims at improving Hyperplane folding, its margin will also be collected and compared to Rubberband folding. The model with highest margin is the highest is the best classifier in this category. This will be done by measuring the margin from the data sets when collecting data for Research Question 2.
 
 \subsection{Research question two}
-Classification accuracy will be measured by partitioning the data sets into two parts, training and testing. The training set and testing set will be partition by a percentage, where the training data will hold the majority of the data points. As the classification accuracy of the testing set is affected by the accuracy of the classifier (created from training data). The data set is divided into 10-subsets, all of equal size and similar class balance as the entire data set. Where one subset is 10\% of the whole data set. This enables a process where one of these subsets is used for as testing data, and the other ten are used for training. Reapting this process 10 times yields data accuracy as if a larger data pool where available. This simulation is traditionally referred to as Stratified \textit{k}-fold \cite{Flach:2012:MLA:2490546, Japkowicz:2011} or Stratified Cross validation, where \textit{k} is the amount of times the simulation is repeated, normally 5 or 10 times. Our experiment will use 10-fold.
-\par Accuracy is the classifiers performance measurement when assigning a class or label to a unknown data (where no data label is available) point. The choice of 10 is due to 10-fold is the optimal choice when sampling classification accuracy, regardless of how much computational power is available\cite{Kohavi:1995:SCB:1643031.1643047}. As Rubber band folding is constrained to the binary classification case, where labels are either true or false. Which in turn leads two 4 possible outcomes when labeling a data point, True Positive (TP, correctly labeling a point as "true"), True Negative (TN), False Positive (FP, incorrectly labeling a a point as False) and False Negative, FN \cite{Japkowicz:2011}. For each data set, a confusion matrix will be presented, with labeling outcomes from all three classifiers. From which Accuracy \ref{eq:accuracy}, True-positive rate \ref{eq:truepositive} and False-negative rate \ref{eq:truenegative}.
+
+
+\par Accuracy is the classifiers performance measurement when assigning a class or label to a unknown data (where no data label is available) point. As Rubber band folding is constrained to the binary classification case, where labels are either true or false. Which in turn leads two 4 possible outcomes when labeling a data point, True Positive (TP, correctly labeling a point as "true"), True Negative (TN), False Positive (FP, incorrectly labeling a a point as False) and False Negative, FN \cite{Japkowicz:2011}. For each data set, a confusion matrix will be presented, with labeling outcomes from all three classifiers. From which Accuracy \ref{eq:accuracy}, True-positive rate \ref{eq:truepositive} and False-negative rate \ref{eq:truenegative}.
 \begin{equation}\label{eq:accuracy}
 \begin{aligned}
      \cfrac{TP + TN}{TP + TN + FP + FN}
@@ -1088,8 +1116,6 @@ Support vector machine's accuracy will not increase per each fold, as it serves 
 \FloatBarrier
 
 \section{Results}
-\subsection{BMI data set}
-
 \FloatBarrier
 \subsubsection{Accuracy}
 
@@ -1144,6 +1170,7 @@ Sensitivity in figure \ref{fig:bmi-Sensitivity} shows Rubberband folding reachin
 \subsection{Hepatitis data set}
 
 \FloatBarrier
+
 \subsubsection{Accuracy}
 \begin{figure}[!htb]
 \centering
@@ -1194,6 +1221,7 @@ Both Rubberband folding and Hyperplane folding decreases in sensitivity. Hyperpl
 
 \subsection{Liver data set}
 \FloatBarrier
+
 \subsubsection{Accuracy}
 \begin{figure}[!htb]
 \centering
@@ -1241,6 +1269,8 @@ Rubberband folding decreases in sensitivity between fold 1-2, and regains sensit
 \clearpage
 \FloatBarrier
 \subsection{Breast cancer data set}
+
+
 \subsubsection{Accuracy}
 \begin{figure}[!htb]
 \centering
@@ -1401,42 +1431,46 @@ Both classifiers increase linearly in training time per fold. Where Rubberband i
 
 
 \chapter{Discussion}
+\par When working with data in higher dimension than three using dimensionality reduction its hard to envision the results after re-projecting the data. Needless to say, some results were expected others were not. 
 \subsection{Accuracy}
-Rubberband folding achieves a higher classification accuracy in all data sets, when compared to Hyperplane folding. This can be attributed to Rubberband folding being affected by over rotation. As Rubberband folding does not rotate data points residing in the zone described in the section \ref{Problem description}. Rubberband increases the overall classification accuracy when applied to the BMI data set by $0.00961538461538$, which corresponds to 0.9\%. This increase is significant, as specificity and sensitivty increases aswell. For example,  an increase in accuracy could stem from sensitivity increasing by 10\%, while specificty decreases by 5\%, which would still lead to net gain in accuracy, albeit misleading. As the increase in accuracy also leads to a decrease when classifying a particular class. Applying this example the breast cancer data set, where classifying 10\% none-benin cancer cells correctly would be of great benefit, while erroneously giving 5\% more patients unnecessary treatment would be unacceptable. As such, the increase in all three accuracy measures for the BMI data indicates that Rubberband folding can increase the classification accuracy. 
-\par Rubberbands accuracy does not increase in the Hepatitis data set, instead, a decrease is observed. Overall classification accuracy is decreased by $0.047222222222$. Hyperplane folding has a larger decrease in accuracy. This can be attributed to Rubberband folding not over rotating points. But as Rubberband decreases in specificty and sensitivty, it is not possible draw a conclusion from the data as to why it performs better than Hyperplane folding for hepatitis data set. 
-\par Rubberband performs better than Hyperplane folding by a large margin when applied to the liver data set. But does not achieve a accuracy higher than the Support vector machine baseline. Rubberbands behavior differs in the liver data set compared to the hepatitis data set, as the loss of accuracy is not consequent. Rubberband folding regains some accuracy between fold 2-3. This is due to both sensitivty and specificty in figures \ref{fig:liver-Specificty} \ref{fig:liver-Sensitivity} increasing. The exact reasons to why Rubberband folding exhibits such behavior is outside of the scope of this thies \todo{Är det verkligen det???}. \par
-Rubberband folding increases the accuracy in the Breast cancer data set, by $0.00347852389595$. This increase is due to sensitivty increasing. Meaning the classifiers ability to correctly detect none-benin cancer cell increases by 0.3\%. This is significant as no decrease in specificty is observed, and as in the BMI dataset, a true increase accuracy without drawback is achieved. Such increase corresponds to correctly detecting none-benin cancer cells in three out of thousand.
+\par Rubber band folding achieves a higher classification accuracy in all data sets, when compared to Hyperplane folding. This can be attributed to Rubber band folding being affected by over rotation. As Rubber band folding does not rotate data points residing in the zone described in the Section \ref{Problem description}. Rubber band increases the overall classification accuracy when applied to the BMI data set by $0.00961538461538$, which corresponds to 0.9\%. This increase is significant, as specificity and sensitivity increases as well. For example,  an increase in accuracy could stem from sensitivity increasing by 10\%, while specificity decreases by 5\%, which would still lead to net gain in accuracy, albeit misleading. As the increase in accuracy also leads to a decrease when classifying a particular class. Applying this example the breast cancer data set, where classifying 10\% none-benign cancer cells correctly would be of great benefit, while erroneously giving 5\% more patients unnecessary treatment would be unacceptable. As such, the increase in all three accuracy measures for the BMI data indicates that Rubber band folding could increase the classification accuracy. 
+\par Rubber bands accuracy does not increase in the Hepatitis data set, instead, a decrease is observed. Overall classification accuracy is decreased by $0.047222222222$. Hyperplane folding has a larger decrease in accuracy. This can be attributed to Rubber band folding not over rotating points. But as Rubber band decreases in specificity and sensitivity, it is not possible draw a conclusion from the data as to why it performs better than Hyperplane folding for hepatitis data set. 
+\par Rubber band performs better than Hyperplane folding by a large margin when applied to the liver data set. But does not achieve a accuracy higher than the Support vector machine baseline. Rubber bands behavior differs in the liver data set compared to the hepatitis data set, as the loss of accuracy is not consequent. Rubber band folding regains some accuracy between fold 2-3. This is due to both sensitivity and specificity increasing in Figures \ref{fig:liver-Specificty} \ref{fig:liver-Sensitivity}.
+\par Rubber band folding increases the accuracy in the Breast cancer data set by $0.00347852389595$. This increase is due to sensitivity increasing. Meaning the classifiers ability to correctly detect non-benign cancer cell increases by 0.3\%. As no decrease in specificity is observed and true increase accuracy is observed, Rubber band folding could be considered as a valid application for some data with the drawback of training and classification time. Such increase corresponds to correctly detecting non-benign cancer cells in three out of thousand.
 
 \subsection{Margin}
-Rubberband folding increases the margin in all data sets in every fold with the exception second fold in the BMI data set. Where the margin decreases with $0.000916729162812$. The loss of margin is can not be attributed to floating point precision error, as the floating point representation throughout this thesis is float64. Meaning that the decline in margin is due to a unhandled corner case in the algorithm, triggered by the bmi data set. The loss of margin is not substantial, and the classification accuracy increases during the same fold, as seen in figure \ref{fig:bmi-accuracy}. Rubberband margin after four folds is higher than Hyperplane folding in the breast cancer and liver data set, albeit lower in the BMI data set and heptitis. The margin increase in the liver data set is substantial, this is due to..... VULLE KOLLA HÄR OCH SKJUT IN NÅGOT SMART.
+Rubber band folding increases the margin in all data sets in every fold with the exception second fold in the BMI data set. Where the margin decreases with $0.000916729162812$. The loss of margin is can not be attributed to floating point precision error, as the floating point representation throughout this thesis is a 64 bit floating point. Meaning that the decline in margin is due to an unhandled corner case in the algorithm, triggered by the BMI data set. The loss of margin is not substantial, and the classification accuracy increases during the same fold, as seen in figure \ref{fig:bmi-accuracy}. Rubber band margin after four folds is higher than Hyperplane folding in the breast cancer and liver data set, albeit lower in the BMI data set and hepatitis. The margin increase in the liver data set is substantial, this is expected to originate from the new rubber band angle constraint and the position of data point. How ever this is not considered as something negative for the algorithm.
 
 \subsection{Execution time}
 
-Reults from figure \ref{fig:bmi-classify} indicates that both Rubberband folding and Hyperplane folding increases in execution time when the folds are increased. Where Rubberband folding increases less per fold. This can be attributed to Rubberband folding rotates less points as split plane encapsulates less area and points. This increased over several folds will lead to less points being rotated over time. The almost overlapping lines in figure \ref{fig:hep-fit} indicates that both classifiers takes the same amount of time when training the decision function for data sets. There some variance between the Hyperplane and Rubber band folding, this can be attributed to scheduling of the operating system.
+Results from figure \ref{fig:bmi-classify} indicates that both Rubber band folding and Hyperplane folding increases in execution time when the folds are increased. Where Rubber band folding increases less per fold. This can be attributed to Rubber band folding rotates less points as split plane encapsulates less area and points. This increased over several folds will lead to less points being rotated over time. The almost overlapping lines in figure \ref{fig:hep-fit} indicates that both classifiers takes the same amount of time when training the decision function for data sets. There some variance between the Hyperplane and Rubber band folding, this can be attributed to scheduling of the operating system.
 
 \par The 2D-projection algorithm turned out to be useful for just visualization purposes. Ploting a SVM with a high dimensional feature space is hard to show on a computer screen. With a 2D-projection, a more accurate way of displaying the SVM is possible. This finding is in it self very useful, for not only hyperplane folding.
 
 \chapter{Conclusions}
 \section{RQ1}
-Rubber band folding increases the margin. So does the Hyperplane folding. It is unclear if Rubberband folding increases the margin more than Hyperplane folding for a given set. Depending on the nature of the data RBF made larger increase in margin
+Rubber band folding increases the margin. So does the Hyperplane folding. It is unclear if Rubber band folding increases the margin more than Hyperplane folding for a given set. Depending on the nature of the data RBF made larger increase in margin
 \section{RQ2}
-Rubberband folding can increase the classification accuracy, where both specificty and sensitivy increases, causing a true increase in accuracy. For most training data used for testing during the thesis, the accuracy decreases. The accuracy for HPF using RBF contrary to not using RBF is always better. What type of data and when it is suitable to use HPF with RBF over a standard SVM is at this state of development unclear. 
+Rubber band folding can increase the classification accuracy, where both specificity and sensitivity increases, causing a true increase in accuracy. For most training data used for testing during the thesis, the accuracy decreases. The accuracy for HPF using RBF contrary to not using RBF is always better. What type of data and when it is suitable to use HPF with RBF over a standard SVM is at this state of development unclear. 
 
 \section{RQ3}
-Rubberband and Hyperplane folding exhibits linear behavior when the amount of folds increases, for both classification and training. Rubberband folding classifies data points faster when the amount of folds increases, as it rotates less points. 
+Rubber band and Hyperplane folding exhibits linear behavior when the amount of folds increases, for both classification and training. Rubber band folding classifies data points faster when the amount of folds increases, as it rotates less points. 
 
 \chapter{Future Work}
-\par Rotations are technically applicable in any dimension. Theoretically Hyperplane folding should be applicable in any dimension, that is without the need of a 2D-projection. The projection in itself serves as a great tool for visualizing SVMs of any dimension. How ever, the main purpose of the projection was to ensure control when performing the folds. Thinking in two dimensions are easier compared to higher dimensions. An investigation in performing Hyperplane folding in the datas original dimensionality is something for the future. This would also yield a performance increase as the calculation of the projection matrix would be unnecessary.
+\par As rotations are applicable in any dimension, a optimization of the technique would be to apply the rotations without projecting the data set down to two dimension. As such rotation would not require the dimension reduction process, or reduce the number of reduce  / align steps required. How ever, such method would require relation between data features and labels remains unchanged post rotation. Which is why the current implementation rotates data points in two dimension, as reasoning in dimensions higher than 3 is difficult.
 
-\par Rubber band folding was this thesis attempt at solving some of Hyperplane foldings weaknesses. There may be better ways that eliminate more of its problems. There are not to much related work on the subject and a lot of RBFs properties has been made up iteratively during the progression of the thesis.
+\par Rubber band folding solves over rotation and improves Hyperplane foldings accuracy. Albiet further investigation should be done into researching a solution that takes Rubber band foldings weaknesses into account, based on our results. As the only research done on the subject is the initial paper by Lars Lundberg Et al and this thesis. 
 
-\par State of the art SVMs are built to handle more than binary data. Much like the first method proposed by Vapnik \cite{Cortes:1995:SN:218919.218929, vapnik1} Hyperplane folding requires the data to be binary. Building the Hyperplane folding algorithm to handle multi-class problems would be desirable for common applications.
+\par State of the art SVMs are built to handle more than binary data. Much like the first method proposed by Vapnik \cite{Cortes:1995:SN:218919.218929, vapnik1} Hyperplane folding requires the data to be binary. Building the Hyperplane folding algorithm to handle multi-class problems is be desirable for common applications as the current solution is limited to binary classification.
 
-\par Hyperplane folding is bound to being a hard-margin SVM. More extensive experiments with methods to make data linearly separable using kernels and data pruning could improve the current state of the algorithm. Researching a way of using soft-margin SVMs instead hard-margin SVMs could yield a Hyperplane folding algorithm that could be run directly on inseparable data.
+\par Hyperplane folding is limited to linearly seperable data sets. More extensive experiments with methods to make data linearly separable using kernel-tricks \todo{REF HÄR} and data pruning could improve the current state of the algorithm. Researching a way of using soft-margin SVMs instead hard-margin SVMs could yield a Hyperplane folding algorithm that could be run directly on inseparable data.
 
-\par Not much have been said about Hyperplane foldings time complexity in this thesis. Folds and rotations takes performance. The 2D-projection scales away a lot of performance and could be measured for better metrics.
 
-\par After folding, the data points may not be normalized any more. SVMs perfer to have its training data normalized. Therefore an investigation in keeping the relation between points post folding could be conducted. 
+\par Post folding, data points may have been rotated in such fashion that the points exceeds values  in the normalized interval. Research should therefor be done into the effects of not applying any normalization of the data, and normalizing in between folds and comparing the results to the current solution.
+
+\par The selection of primary support vector affects where the data will be partitioned into different sets. And therefor effects which points will be rotated, the rational angle, and therefor effects the end result. Future work into deciding the optimal primary support vector could lead to increased accuracy and margin. 
+
+\par The \textit{C}-paramter effects where the placement of decision in the feature space \cite{Cortes:1995:SN:218919.218929}, and therefor effects the hyperplanes used for rotation of points. Future work should investigate and research a optimal \textit{C}-parameter for maximization of accuracy and margin when applied to Hyperplane folding. 
 
 
 % All references are in a separate file: thesis-refs.bib
@@ -1445,7 +1479,448 @@ Rubberband and Hyperplane folding exhibits linear behavior when the amount of fo
 
 \appendix
 \chapter{Supplemental Information}
+\section{BMI data set}
 
+\subsection{SVM - Confusion matrix - Fold 0}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 51.2 & 0.8 \\[1.5ex]
+& False  & 0.9   & 48.5 \\ \hline
+\end{tabular}
+
+\subsection{RBF - Confusion matrix - Fold 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 52.0 & 0.0  \\[1.5ex]
+& False  & 1.1   & 48.3  \\ \hline
+\end{tabular}
+
+\subsection{HPF - Confusion matrix - Fold 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 49.6 & 2.4   \\[1.5ex]
+& False  & 3.7   & 45.7  \\ \hline
+\end{tabular}
+
+\subsection{RBF - Confusion matrix - Fold 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 51.2 & 0.1  \\[1.5ex]
+& False  & 0.8   & 48.6 \\ \hline
+\end{tabular}
+
+\subsection{HPF - Confusion matrix - Fold 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 50.9 & 45.2   \\[1.5ex]
+& False  & 4.2   & 1.1 \\ \hline
+\end{tabular}
+
+\subsection{RBF - Confusion matrix - Fold 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 52.0 & 0.0   \\[1.5ex]
+& False  & 0.7   & 48.7  \\ \hline
+\end{tabular}
+
+\subsection{HPF - Confusion matrix - Fold 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 49.0 & 3.0   \\[1.5ex]
+& False  & 4.9   & 44.5   \\ \hline
+\end{tabular}
+
+\subsection{RBF - Confusion matrix - Fold 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 52.0 & 0.0  \\[1.5ex]
+& False  & 0.7   & 48.7 \\ \hline
+\end{tabular}
+
+\subsection{HPF - Confusion matrix - Fold 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 43.1 & 8.9  \\[1.5ex]
+& False  & 11.0  & 38.4  \\ \hline
+\end{tabular}
+
+
+\section{Hepatitis data set}
+
+\subsection{SVM confusion matrix fold - 0}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.8 & 0.8   \\[1.5ex]
+& False  & 1.7   & 1.6 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.8 & 0.8   \\[1.5ex]
+& False  & 1.7   & 1.6 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.5 & 1.1   \\[1.5ex]
+& False  & 2.2   & 1.1 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.8 & 0.8  \\[1.5ex]
+& False  & 1.8  & 1.5 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.3 & 1.3  \\[1.5ex]
+& False  & 2.6  & 0.7 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.8 & 0.8  \\[1.5ex]
+& False  & 1.8  & 1.5 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.2 & 1.4 \\[1.5ex]
+& False  & 2.7  & 0.6 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.8 & 0.8  \\[1.5ex]
+& False  & 1.8  & 1.5 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.3 & 1.3  \\[1.5ex]
+& False  & 2.8  & 0.5 \\ \hline
+\end{tabular}
+
+
+\section{Liver cancer data set}
+\subsection{SVM confusion matrix fold - 0}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.7 & 10.7  \\[1.5ex]
+& False  & 1.6  & 18.4 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.5 & 10.9  \\[1.5ex]
+& False  & 1.7  & 18.3 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.1 & 11.3  \\[1.5ex]
+& False  & 2.3  & 17.7 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.4 & 11.0  \\[1.5ex]
+& False  & 1.6 & 18.4 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 2.3 & 12.1  \\[1.5ex]
+& False  & 2.9 & 17.1 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  & 3.5 & 10.9  \\[1.5ex]
+& False  & 1.6 & 18.4 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  2.5 & 11.9  \\[1.5ex]
+& False  & 2.8 & 17.2 \\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  3.6 & 10.8  \\[1.5ex]
+& False  & 1.7 & 18.3 \\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  2.4 & 12.0 \\[1.5ex]
+& False  & 3.2 & 16.8 \\ \hline
+\end{tabular}
+
+\section{Breast cancer data set}
+
+\subsection{SVM confusion matrix fold - 0}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  35.1 & 0.6  \\[1.5ex]
+& False  & 0.9 & 20.3\\ \hline
+\end{tabular}
+
+
+\subsection{RBF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  35.1 & 0.6  \\[1.5ex]
+& False  & 0.9 & 20.3\\ \hline
+\end{tabular}
+
+
+\subsection{HPF confusion matrix fold - 1}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  27.5 & 8.2  \\[1.5ex]
+& False  & 8.8 & 12.4\\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  35.3 & 0.4  \\[1.5ex]
+& False  & 0.9 & 20.3\\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 2}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  24.8 & 10.9  \\[1.5ex]
+& False  & 11.5 & 9.7\\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  35.3 & 0.4  \\[1.5ex]
+& False  & 0.9 & 20.3\\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 3}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  26.5 & 9.2  \\[1.5ex]
+& False  & 9.7 & 11.5\\ \hline
+\end{tabular}
+
+\subsection{RBF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  35.3 &  0.4  \\[1.5ex]
+& False  & 0.9 & 20.3\\ \hline
+\end{tabular}
+
+\subsection{HPF confusion matrix fold - 4}
+\begin{tabular}{cc|cc}
+\multicolumn{1}{c}{} &\multicolumn{1}{c}{} &\multicolumn{2}{c}{Predicted} \\ 
+\multicolumn{1}{c}{} & 
+\multicolumn{1}{c|}{} & 
+\multicolumn{1}{c}{True} & 
+\multicolumn{1}{c}{False} \\ \hline
+\multirow[c]{2}{*}{\rotatebox[origin=tr]{90}{Actual}}
+& True  &  24.9 &  10.8  \\[1.5ex]
+& False  & 11.3 & 9.9\\ \hline
+\end{tabular}
 
 
 
